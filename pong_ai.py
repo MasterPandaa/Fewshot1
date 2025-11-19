@@ -1,5 +1,6 @@
-import sys
 import random
+import sys
+
 import pygame
 
 # -------------------------
@@ -23,6 +24,7 @@ BALL_SPEED = 6
 
 FONT = pygame.font.SysFont("consolas", 32)
 
+
 # -------------------------
 # Class Paddle
 # -------------------------
@@ -43,6 +45,7 @@ class Paddle:
         self.rect.y += self.speed
         if self.rect.bottom > SCREEN_HEIGHT:
             self.rect.bottom = SCREEN_HEIGHT
+
 
 # -------------------------
 # Class Ball
@@ -109,7 +112,7 @@ class Ball:
         offset = ball_center - paddle_center  # positif: kena bagian bawah paddle
         # Skala offset -> pengaruh pada vy
         max_offset = paddle.rect.height / 2
-        factor = (offset / max_offset)  # -1 .. 1
+        factor = offset / max_offset  # -1 .. 1
         add_vy = int(round(factor * (self.base_speed)))
         # Clamp vy agar tidak terlalu lambat atau terlalu cepat
         self.vy += add_vy
@@ -118,6 +121,7 @@ class Ball:
         # Sedikit percepat bola tiap pantulan untuk meningkatkan tantangan
         if abs(self.vx) < self.base_speed * 2 + 2:
             self.vx += 1 if self.vx > 0 else -1
+
 
 # -------------------------
 # Utilitas gambar
@@ -131,11 +135,13 @@ def draw_center_line(surface):
         pygame.draw.rect(surface, WHITE, (x - 1, y, 2, dash_height))
         y += dash_height + gap
 
+
 def draw_score(surface, left_score, right_score):
     score_text = f"{left_score}   {right_score}"
     text_surface = FONT.render(score_text, True, WHITE)
     rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, 40))
     surface.blit(text_surface, rect)
+
 
 # -------------------------
 # AI Logic: mengikuti Y bola dengan batas kecepatan
@@ -148,6 +154,7 @@ def ai_control(ai_paddle: Paddle, ball: Ball):
     elif ball.rect.centery > ai_paddle.rect.centery + threshold:
         ai_paddle.move_down()
     # Clamp agar tetap di layar (sudah di-handle di move_up/down)
+
 
 # -------------------------
 # Game Loop
@@ -205,10 +212,14 @@ def main():
         # Cek skor (bola keluar kiri/kanan)
         if ball.rect.left <= 0:
             right_score += 1
-            ball.reset(direction=-1)  # luncurkan menuju kiri (ke pemain) setelah AI skor
+            ball.reset(
+                direction=-1
+            )  # luncurkan menuju kiri (ke pemain) setelah AI skor
         elif ball.rect.right >= SCREEN_WIDTH:
             left_score += 1
-            ball.reset(direction=1)   # luncurkan menuju kanan (ke AI) setelah pemain skor
+            ball.reset(
+                direction=1
+            )  # luncurkan menuju kanan (ke AI) setelah pemain skor
 
         # Gambar semuanya
         WIN.fill(BLACK)
@@ -222,6 +233,7 @@ def main():
 
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     main()
